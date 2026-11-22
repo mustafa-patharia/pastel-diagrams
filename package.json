@@ -46,6 +46,7 @@
   },
   "dependencies": {
     "@fontsource/inter": "^5.1.1",
+    "@twemoji/svg": "15.0.0",
     "libavoid-js": "0.5.0-beta.6",
     "lucide-static": "^0.468.0",
     "mermaid": "^11.4.1",

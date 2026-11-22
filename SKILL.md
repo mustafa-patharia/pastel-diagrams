@@ -1,6 +1,6 @@
 ---
 name: pastel-diagrams
-description: Draw clean, modern diagrams (flowcharts, architecture, process and status flows, state machines, sequence, ER/data model, timeline and mindmap diagrams) in a soft pastel whiteboard style — rounded cards, Inter font, Lucide icons, straight rounded-corner connectors that attach to card side centres, light or dark themes — and export them as SVG, 3x PNG, a self-contained HTML page and a light/dark auto-switching SVG. Also renders ```mermaid blocks in Markdown files to images. Use when the user asks for a diagram, flowchart, architecture diagram, user flow, process map, status lifecycle, state diagram, data model, sequence diagram, timeline or mindmap for docs, READMEs, slides or guides, or says a diagram looks dated or plain.
+description: Draw clean, modern diagrams (flowcharts, architecture, process and status flows, state machines, sequence, ER/data model, timeline and mindmap diagrams) in a soft pastel whiteboard style — rounded cards, Inter font, Lucide icons, straight rounded-corner connectors that attach to card side centres, light or dark themes, sticky-note comments and emoji stickers — and export them as SVG, 3x PNG, a self-contained HTML page and a light/dark auto-switching SVG. Also renders ```mermaid blocks in Markdown files to images. Use when the user asks for a diagram, flowchart, architecture diagram, user flow, process map, status lifecycle, state diagram, data model, sequence diagram, timeline or mindmap for docs, READMEs, slides or guides, wants review comments or stickers on a diagram, or says a diagram looks dated or plain.
 ---
 
 # Pastel diagrams
@@ -91,6 +91,22 @@ flowchart LR
 - **Groups:** `subgraph id["Group name"] ... end` draws a faint tinted panel with an uppercase caption.
 - **Edge labels:** `a -- "Label" --> b`. Keep them to 1–3 words.
 
+## Sticky notes and stickers (flowcharts, state diagrams)
+
+For review comments and reactions, add comment lines anywhere in the `.mmd` (Mermaid ignores them; other Mermaid tools render the diagram without them):
+
+```
+%% note pay: Add Apple Pay before launch | Product | green
+%% sticker pay: +1
+%% sticker done: 🎉
+%% sticker guest: 👀 | top-left
+%% sticker web: WIP | orange
+```
+
+- `note <node id>: text | author | colour` draws a sticky note in the nearest free space by that card. Author and colour are optional; colours: `yellow` (default), `green`, `pink`, `blue`, `purple`, `orange`.
+- `sticker <node id>: text or emoji | corner | colour` pins a die-cut sticker to a card corner (`top-right` default, `top-left`, `bottom-right`, `bottom-left`). Emoji come from Twemoji (about 3,700); text stickers take a colour: `purple` (default), `green`, `pink`, `blue`, `orange`, `red`, `yellow`.
+- Keep notes to one or two sentences and use at most a few per diagram. An unknown node id prints a warning.
+
 ## Style rules
 
 - One idea per diagram; about 4–12 nodes. Split bigger flows into several diagrams.
@@ -121,4 +137,4 @@ Copy `themes/pastel.json` (and `themes/pastel-dark.json` for dark mode) to `my-t
 
 ## Examples
 
-`examples/` holds `.mmd` sources with their rendered SVG, PNG, HTML and auto SVG (dark renders in `examples/dark/`): an order lifecycle with a decision, a web app architecture with groups, a sign-in sequence, support ticket states, a shop data model, a release timeline and a launch mindmap. `examples/github-action/render-diagrams.yml` renders every `.mmd` in a repository on push.
+`examples/` holds `.mmd` sources with their rendered SVG, PNG, HTML and auto SVG (dark renders in `examples/dark/`): an order lifecycle with a decision, a checkout review with sticky notes and stickers, a web app architecture with groups, a sign-in sequence, support ticket states, a shop data model, a release timeline and a launch mindmap. `examples/github-action/render-diagrams.yml` renders every `.mmd` in a repository on push.

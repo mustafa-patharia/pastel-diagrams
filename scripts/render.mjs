@@ -27,6 +27,7 @@ import { resolveTheme, loadTheme, partnerTheme, listThemes } from "./lib/theme.m
 import { measureLayout, problems, warnings, summary } from "./lib/check.mjs";
 import { mermaidBlocks, replaceBlocks } from "./lib/markdown.mjs";
 import { collectGeometry, routeEdges, applyRoutes } from "./lib/route.mjs";
+import { parseNotes, applyNotes } from "./lib/notes.mjs";
 import { pkgDir, fontCss, icon, diagramKind, classDefs, mermaidConfig, themeCss } from "./lib/style.mjs";
 
 let puppeteer;
@@ -182,6 +183,12 @@ async function render(page, id, code, t, title) {
   if (opt.edges === "orthogonal" && ["flowchart", "state"].includes(diagramKind(code))) {
     const routes = await routeEdges(await page.$eval("#out svg", collectGeometry));
     await page.$eval("#out svg", applyRoutes, routes, Math.max(6, Math.min(12, t.radius.node)));
+  }
+  // Sticky notes and stickers from %% note / %% sticker lines.
+  const notes = parseNotes(code);
+  if (notes.length) {
+    const missing = await page.$eval("#out svg", applyNotes, notes, `'${t.font}', system-ui, sans-serif`);
+    for (const m of new Set(missing)) console.error(`warn note/sticker: no node "${m}" in ${id.replace(/^d_|_(light|dark)$/g, "")}`);
   }
   return page.evaluate((id, canvas, title) => {
     const el = document.querySelector("#out svg");

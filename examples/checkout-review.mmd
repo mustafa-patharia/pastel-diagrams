@@ -1,0 +1,17 @@
+%% title: Checkout flow review
+flowchart LR
+  cart["i:shopping-cart <b>Cart</b><br/><span class='s'>Items and totals</span>"]:::grey
+  login{"i:user-check <b>Signed in?</b>"}:::decision
+  guest["i:user <b>Guest details</b><br/><span class='s'>Email and address</span>"]:::yellow
+  pay["i:credit-card <b>Payment</b><br/><span class='s'>Card or wallet</span>"]:::sky
+  done["i:badge-check <b>Order placed</b><br/><span class='s'>Receipt emailed</span>"]:::mint
+  cart --> login
+  login -- Yes --> pay
+  login -- No --> guest
+  guest --> pay
+  pay --> done
+  %% note guest: Can we skip the address for digital orders? | Design review | pink
+  %% note pay: Add Apple Pay and Google Pay before launch | Product | green
+  %% sticker done: 🎉
+  %% sticker pay: +1
+  %% sticker guest: 👀 | top-left
