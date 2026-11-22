@@ -1,0 +1,15 @@
+%% title: Order lifecycle
+flowchart LR
+  new(["i:shopping-cart <b>New order</b>"]):::grey
+  pay{"i:credit-card <b>Payment OK?</b>"}:::decision
+  hold["i:circle-pause <b>On hold</b><br/><span class='s'>Customer notified</span>"]:::yellow
+  pick["i:package <b>Picking</b><br/><span class='s'>Warehouse</span>"]:::sky
+  ship["i:truck <b>Shipped</b><br/><span class='s'>Tracking sent</span>"]:::lav
+  done["i:badge-check <b>Delivered</b>"]:::mint
+  ret["i:undo-2 <b>Returned</b><br/><span class='s'>Refund issued</span>"]:::peach
+  new --> pay
+  pay -- Yes --> pick
+  pay -- No --> hold
+  hold -- "Paid later" --> pick
+  pick --> ship --> done
+  done -- "Within 30 days" --> ret

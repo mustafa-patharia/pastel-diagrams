@@ -1,0 +1,27 @@
+%% title: Shop data model
+erDiagram
+  direction LR
+  CUSTOMER ||--o{ ORDER : places
+  ORDER ||--|{ ORDER_LINE : contains
+  PRODUCT ||--o{ ORDER_LINE : "appears in"
+  CUSTOMER:::sky {
+    uuid id PK
+    string name
+    string email
+  }
+  ORDER:::lav {
+    uuid id PK
+    uuid customer_id FK
+    date placed_at
+    string status
+  }
+  ORDER_LINE:::lav {
+    uuid order_id FK
+    uuid product_id FK
+    int quantity
+  }
+  PRODUCT:::mint {
+    uuid id PK
+    string name
+    decimal price
+  }

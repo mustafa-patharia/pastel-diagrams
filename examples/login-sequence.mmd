@@ -1,0 +1,11 @@
+%% title: Sign-in sequence
+sequenceDiagram
+  participant U as User
+  participant A as App
+  participant I as Identity provider
+  U->>A: Open app
+  A->>I: Redirect to sign-in
+  I-->>U: Sign-in page
+  U->>I: Credentials
+  I-->>A: Token
+  A-->>U: Signed in

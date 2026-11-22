@@ -1,0 +1,19 @@
+%% title: Web app architecture
+flowchart LR
+  user["i:user <b>User</b><br/><span class='s'>Browser or mobile</span>"]:::ext
+  subgraph app["Application"]
+    web["i:monitor <b>Web front end</b><br/><span class='s'>React</span>"]:::sky
+    api["i:server <b>API</b><br/><span class='s'>Node.js</span>"]:::lav
+    worker["i:cog <b>Background jobs</b><br/><span class='s'>Queue worker</span>"]:::lav
+  end
+  subgraph data["Data"]
+    cache["i:zap <b>Cache</b><br/><span class='s'>Redis</span>"]:::mint
+    db[("i:database <b>Database</b><br/><span class='s'>PostgreSQL</span>")]:::mint
+  end
+  mail["i:mail <b>Email service</b>"]:::peach
+  user --> web --> api
+  api --> cache
+  api --> db
+  api -- "Enqueue" --> worker
+  worker --> db
+  worker -- "Send" --> mail

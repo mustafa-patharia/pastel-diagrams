@@ -1,0 +1,21 @@
+%% title: Support ticket states
+stateDiagram-v2
+  direction LR
+  state "i:inbox <b>Open</b>" as Open
+  state "i:loader <b>In progress</b>" as InProgress
+  state "i:clock <b>Waiting on customer</b>" as Waiting
+  state "i:circle-check <b>Resolved</b>" as Resolved
+  state "i:archive <b>Closed</b>" as Closed
+  [*] --> Open
+  Open --> InProgress: Assigned
+  InProgress --> Waiting: Needs info
+  Waiting --> InProgress: Reply received
+  InProgress --> Resolved: Fixed
+  Resolved --> Closed: Confirmed
+  Resolved --> InProgress: Reopened
+  Closed --> [*]
+  class Open grey
+  class InProgress sky
+  class Waiting yellow
+  class Resolved mint
+  class Closed lav

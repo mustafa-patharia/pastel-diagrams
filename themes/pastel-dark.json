@@ -1,0 +1,76 @@
+{
+  "name": "pastel-dark",
+  "font": "Inter",
+  "description": "Soft pastel on a dark slate canvas",
+  "dark": true,
+  "radius": {
+    "node": 14,
+    "cluster": 18,
+    "actor": 12
+  },
+  "strokeWidth": 1,
+  "lineWidth": 1.4,
+  "canvas": "#11151F",
+  "page": "#0B0F17",
+  "pageCard": "#11151F",
+  "pageBorder": "#283044",
+  "text": "#E2E8F0",
+  "muted": "#A3AEC0",
+  "icon": "#B4BFCF",
+  "line": "#64748B",
+  "edgeText": "#CBD5E1",
+  "lifeline": "#283044",
+  "cluster": {
+    "fill": "#161B27",
+    "stroke": "#283044",
+    "text": "#A3AEC0"
+  },
+  "note": {
+    "fill": "#2E2A17",
+    "stroke": "#6B5D24",
+    "text": "#F5EBC4"
+  },
+  "classes": {
+    "lav": {
+      "fill": "#252344",
+      "stroke": "#4F4A8C",
+      "text": "#E6E4FF"
+    },
+    "mint": {
+      "fill": "#16302A",
+      "stroke": "#2F6B55",
+      "text": "#D7F3E6"
+    },
+    "sky": {
+      "fill": "#172B40",
+      "stroke": "#305A85",
+      "text": "#D9EAFB"
+    },
+    "peach": {
+      "fill": "#3A2419",
+      "stroke": "#7F4A30",
+      "text": "#FBE3D5"
+    },
+    "yellow": {
+      "fill": "#33301A",
+      "stroke": "#73662B",
+      "text": "#F8EFC8"
+    },
+    "grey": {
+      "fill": "#1C2230",
+      "stroke": "#364056",
+      "text": "#E2E8F0"
+    },
+    "decision": {
+      "fill": "#35280F",
+      "stroke": "#B07A2A",
+      "text": "#FCD9A0",
+      "dash": "4 3"
+    },
+    "ext": {
+      "fill": "#11151F",
+      "stroke": "#475569",
+      "text": "#E2E8F0"
+    }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "name": "high-contrast",
+  "font": "Inter",
+  "description": "Black text, strong borders, thicker lines",
+  "dark": false,
+  "radius": {
+    "node": 10,
+    "cluster": 12,
+    "actor": 10
+  },
+  "strokeWidth": 2,
+  "lineWidth": 2,
+  "canvas": "#FFFFFF",
+  "page": "#FFFFFF",
+  "pageCard": "#FFFFFF",
+  "pageBorder": "#000000",
+  "text": "#000000",
+  "muted": "#262626",
+  "icon": "#000000",
+  "line": "#1F2937",
+  "edgeText": "#000000",
+  "lifeline": "#525252",
+  "cluster": {
+    "fill": "#FFFFFF",
+    "stroke": "#000000",
+    "text": "#000000"
+  },
+  "note": {
+    "fill": "#FFF59D",
+    "stroke": "#000000",
+    "text": "#000000"
+  },
+  "classes": {
+    "lav": {
+      "fill": "#F0EDFF",
+      "stroke": "#4C1D95",
+      "text": "#000000"
+    },
+    "mint": {
+      "fill": "#E8FBEF",
+      "stroke": "#065F46",
+      "text": "#000000"
+    },
+    "sky": {
+      "fill": "#E6F3FF",
+      "stroke": "#1E3A8A",
+      "text": "#000000"
+    },
+    "peach": {
+      "fill": "#FFEDE5",
+      "stroke": "#9A3412",
+      "text": "#000000"
+    },
+    "yellow": {
+      "fill": "#FFF8D6",
+      "stroke": "#854D0E",
+      "text": "#000000"
+    },
+    "grey": {
+      "fill": "#FFFFFF",
+      "stroke": "#000000",
+      "text": "#000000"
+    },
+    "decision": {
+      "fill": "#FFF8D6",
+      "stroke": "#000000",
+      "text": "#000000",
+      "dash": "5 3"
+    },
+    "ext": {
+      "fill": "#FFFFFF",
+      "stroke": "#404040",
+      "text": "#000000"
+    }
+  }
+}

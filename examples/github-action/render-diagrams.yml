@@ -1,0 +1,38 @@
+# Renders every .mmd file in the repository on push and commits the images.
+# Copy this file to .github/workflows/render-diagrams.yml in your own repository.
+name: Render diagrams
+
+on:
+  push:
+    paths: ["**/*.mmd"]
+  workflow_dispatch:
+
+permissions:
+  contents: write # to commit the rendered images
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # GitHub's Ubuntu runners come with Google Chrome, so nothing else is downloaded.
+      # Output goes next to each .mmd. Add --check to fail the job on layout problems,
+      # or --theme corporate / --formats png,auto to change the output.
+      - name: Render .mmd files
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+        run: |
+          find . -name '*.mmd' -not -path './node_modules/*' -print0 \
+            | xargs -0 -r npx --yes github:mustafa-patharia/pastel-diagrams
+
+      # Commits made with the default GITHUB_TOKEN do not trigger another workflow run.
+      - name: Commit rendered images
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Render diagrams"
+          file_pattern: "*.svg *.png *.html"
