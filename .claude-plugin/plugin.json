@@ -1,0 +1,11 @@
+{
+  "name": "pastel-diagrams",
+  "displayName": "Pastel diagrams",
+  "version": "1.2.0",
+  "description": "Turn plain Mermaid into clean, modern diagrams: pastel cards, Lucide icons, straight connectors, sticky notes and emoji stickers, in light or dark. Exports SVG, PNG, HTML and an auto light/dark SVG.",
+  "author": { "name": "Mustafa Patharia", "url": "https://github.com/mustafa-patharia" },
+  "homepage": "https://github.com/mustafa-patharia/pastel-diagrams",
+  "repository": "https://github.com/mustafa-patharia/pastel-diagrams",
+  "license": "MIT",
+  "keywords": ["mermaid", "diagrams", "flowchart", "architecture-diagram", "svg", "dark-mode", "documentation"]
+}

@@ -28,7 +28,19 @@ Every diagram is exported as an **SVG**, a **3x PNG**, a **self-contained HTML p
 
 Requirements: Node.js 18+ and an installed Chrome, Edge or Chromium. Nothing else is downloaded.
 
-**1. Claude Code skill, for all your projects:**
+**1. Claude Code plugin** (easiest). Inside Claude Code, run:
+
+```
+/plugin marketplace add mustafa-patharia/pastel-diagrams
+```
+
+```
+/plugin install pastel-diagrams@pastel-diagrams
+```
+
+The first time you ask for a diagram, the agent runs `npm install` in the plugin folder.
+
+**2. Claude Code skill, for all your projects:**
 
 ```bash
 git clone https://github.com/mustafa-patharia/pastel-diagrams ~/.claude/skills/pastel-diagrams
@@ -40,7 +52,7 @@ cd ~/.claude/skills/pastel-diagrams && npm install
 
 Then just ask: *"Draw our sign-up flow as a diagram and put it in docs/diagrams."*
 
-**2. Claude Code skill, for one project only** (shared with your team through git):
+**3. Claude Code skill, for one project only** (shared with your team through git):
 
 ```bash
 git clone https://github.com/mustafa-patharia/pastel-diagrams .claude/skills/pastel-diagrams
@@ -50,9 +62,9 @@ git clone https://github.com/mustafa-patharia/pastel-diagrams .claude/skills/pas
 cd .claude/skills/pastel-diagrams && npm install
 ```
 
-**3. Other AI agents** (Cursor, Codex, Copilot and others): clone the repo anywhere, run `npm install`, and tell the agent to follow `SKILL.md` when it draws diagrams.
+**4. Other AI agents** (Cursor, Codex, Copilot and others): clone the repo anywhere, run `npm install`, and tell the agent to follow `SKILL.md` when it draws diagrams.
 
-**4. Command line, with no install:**
+**5. Command line, with no install:**
 
 ```bash
 npx --yes github:mustafa-patharia/pastel-diagrams docs/diagrams
