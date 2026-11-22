@@ -54,7 +54,7 @@ export function mermaidConfig(t) {
   }
   return {
     startOnLoad: false, theme: "base", securityLevel: "loose", htmlLabels: true,
-    flowchart: { curve: "basis", htmlLabels: true, nodeSpacing: 34, rankSpacing: 52, padding: 14, diagramPadding: 18, wrappingWidth: 260 },
+    flowchart: { curve: "basis", htmlLabels: true, nodeSpacing: 34, rankSpacing: 52, padding: 14, diagramPadding: 18, wrappingWidth: 260, subGraphTitleMargin: { top: 12, bottom: 8 } },
     state: { padding: 12, nodeSpacing: 40, rankSpacing: 50 },
     er: { diagramPadding: 18, entityPadding: 14, fontSize: 13, useMaxWidth: true },
     sequence: { actorFontFamily: t.font, messageFontFamily: t.font, noteFontFamily: t.font, mirrorActors: false,

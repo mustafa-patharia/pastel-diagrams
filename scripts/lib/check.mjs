@@ -70,7 +70,7 @@ export function measureLayout(svg, kind) {
   }
 
   // ---- edges as sampled polylines in screen coordinates
-  const paths = [...svg.querySelectorAll("g.edgePaths > path, path.transition, path.relationshipLine")]
+  const paths = [...svg.querySelectorAll("g.edgePaths > path, path.flowchart-link, path.transition, path.relationshipLine")]
     .filter((p, i, a) => a.indexOf(p) === i && p.getTotalLength() > 0);
   const nearest = (p) => {
     let best = null, d = 1e9;
@@ -114,7 +114,7 @@ export function measureLayout(svg, kind) {
 
   // ---- overlapping labels: edge labels against each other and against nodes
   const L = [...svg.querySelectorAll("g.edgeLabel")].filter((el) => name(el) !== "(unnamed)")
-    .map((el) => ({ name: name(el), b: box(el.querySelector("span, p, text, foreignObject") || el) })).filter((l) => l.b.w > 0);
+    .map((el) => ({ name: name(el), b: box(el.querySelector("p") || el.querySelector("span, text, foreignObject") || el) })).filter((l) => l.b.w > 0);
   for (let i = 0; i < L.length; i++) {
     for (let j = i + 1; j < L.length; j++) if (overlap(L[i].b, L[j].b) > 4) r.overlaps.push(`edge label "${L[i].name}" overlaps edge label "${L[j].name}"`);
     for (const n of N) if (overlap(L[i].b, n.b, 1) > 4) r.overlaps.push(`edge label "${L[i].name}" overlaps "${n.name}"`);

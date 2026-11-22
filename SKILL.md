@@ -1,6 +1,6 @@
 ---
 name: pastel-diagrams
-description: Draw clean, modern diagrams (flowcharts, architecture, process and status flows, state machines, sequence, ER/data model, timeline and mindmap diagrams) in a soft pastel whiteboard style — rounded cards, Inter font, Lucide icons, thin curved connectors, light or dark themes — and export them as SVG, 3x PNG, a self-contained HTML page and a light/dark auto-switching SVG. Also renders ```mermaid blocks in Markdown files to images. Use when the user asks for a diagram, flowchart, architecture diagram, user flow, process map, status lifecycle, state diagram, data model, sequence diagram, timeline or mindmap for docs, READMEs, slides or guides, or says a diagram looks dated or plain.
+description: Draw clean, modern diagrams (flowcharts, architecture, process and status flows, state machines, sequence, ER/data model, timeline and mindmap diagrams) in a soft pastel whiteboard style — rounded cards, Inter font, Lucide icons, straight rounded-corner connectors that attach to card side centres, light or dark themes — and export them as SVG, 3x PNG, a self-contained HTML page and a light/dark auto-switching SVG. Also renders ```mermaid blocks in Markdown files to images. Use when the user asks for a diagram, flowchart, architecture diagram, user flow, process map, status lifecycle, state diagram, data model, sequence diagram, timeline or mindmap for docs, READMEs, slides or guides, or says a diagram looks dated or plain.
 ---
 
 # Pastel diagrams
@@ -40,6 +40,7 @@ If no browser is found, set `CHROME_PATH` to the browser executable. Without a c
    |---|---|
    | `--theme pastel\|mono\|corporate\|high-contrast\|<file.json>` | Palette, font, corner radius and connector colours (default `pastel`). `mono` prints well; `corporate` suits business documents; `high-contrast` for accessibility. |
    | `--dark` | Dark variant of the theme. |
+   | `--edges curved` | Mermaid's curved connectors instead of the default straight ones between card side centres (flowcharts, state diagrams). |
    | `--formats png,svg` | Only these outputs (any of `svg,png,html,auto`). |
    | `--scale 2` | PNG resolution (default 3). |
    | `--md` | Folders: render ```` ```mermaid ```` blocks in `.md` files (see below). |

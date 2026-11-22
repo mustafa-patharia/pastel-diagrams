@@ -1,6 +1,6 @@
 # pastel-diagrams
 
-An AI agent skill (Claude Code and other agents that read `SKILL.md`) and a command-line tool that turns plain Mermaid into clean, modern diagrams: soft pastel cards, the Inter font, Lucide icons and thin curved connectors, in light or dark. Every diagram is exported as an **SVG**, a **3x PNG**, a **self-contained HTML** page and an **SVG that follows light/dark mode**, ready for docs, READMEs, Word guides and slides.
+An AI agent skill (Claude Code and other agents that read `SKILL.md`) and a command-line tool that turns plain Mermaid into clean, modern diagrams: soft pastel cards, the Inter font, Lucide icons and straight right-angle connectors with rounded corners that attach to the centre of a card side, in light or dark. Every diagram is exported as an **SVG**, a **3x PNG**, a **self-contained HTML** page and an **SVG that follows light/dark mode**, ready for docs, READMEs, Word guides and slides.
 
 You write this:
 
@@ -89,6 +89,7 @@ node scripts/render.mjs docs --md --out build/docs             # every .md in a 
 | `--out <folder>` | Output folder (default: next to each input) |
 | `--theme <name\|file.json>` | `pastel`, `mono`, `corporate`, `high-contrast`, or your own theme file |
 | `--dark` | Dark variant of the theme |
+| `--edges orthogonal\|curved` | Straight connectors between side centres (default), or Mermaid's curves |
 | `--formats <list>` | Any of `svg,png,html,auto` (default: all) |
 | `--scale <n>` | PNG resolution (default 3) |
 | `--check` | Exit with code 2 when the layout check finds problems |
@@ -97,6 +98,10 @@ node scripts/render.mjs docs --md --out build/docs             # every .md in a 
 | `--md-image png\|svg\|auto` | Image the rendered Markdown links to (default `png`) |
 
 If no browser is found, set `CHROME_PATH` to the browser executable.
+
+### Connectors
+
+In flowcharts and state diagrams, Mermaid places the nodes and [libavoid](https://www.adaptagrams.org/documentation/libavoid.html) re-routes every connector with straight segments around the other nodes. Connectors attach to the centre of a card side. When several use the same side, they spread evenly along it (two at 1/3 and 2/3, three at 1/4, 1/2 and 3/4, and so on), ordered so they do not cross; when a side is full they share points. Diamonds and circles use one line per tip. Corners are rounded and edge labels sit on the longest free stretch of their line. `--edges curved` gives Mermaid's own curved lines instead.
 
 ### Layout check
 
@@ -146,8 +151,8 @@ Colour suggestions: grey = start/neutral, sky = in progress, lav = services, min
 
 ## How it works
 
-[Mermaid](https://mermaid.js.org) lays out the diagram. The script runs it in headless Chrome through [puppeteer-core](https://pptr.dev) with a theme from `themes/`, embeds [Inter](https://rsms.me/inter/) and [Lucide](https://lucide.dev) icons as data URIs (so the SVG and HTML work offline), rounds the corners, adds an accessible `<title>` and `<desc>`, measures the layout in the browser for the check, and exports the files.
+[Mermaid](https://mermaid.js.org) lays out the diagram. The script runs it in headless Chrome through [puppeteer-core](https://pptr.dev) with a theme from `themes/`, re-routes flowchart and state connectors with [libavoid-js](https://github.com/Aksem/libavoid-js), embeds [Inter](https://rsms.me/inter/) and [Lucide](https://lucide.dev) icons as data URIs (so the SVG and HTML work offline), rounds the corners, adds an accessible `<title>` and `<desc>`, measures the layout in the browser for the check, and exports the files.
 
 ## License
 
-MIT © Mustafa Patharia
+MIT © Mustafa Patharia. The libavoid-js dependency is LGPL-2.1-or-later and is installed as a separate npm package.

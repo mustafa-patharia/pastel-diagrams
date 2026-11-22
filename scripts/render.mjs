@@ -8,6 +8,7 @@
 //   --theme <name|path>   pastel (default), mono, corporate, high-contrast, or a theme .json file
 //   --dark                use the dark variant of the theme
 //   --scale <n>           PNG resolution (default 3)
+//   --edges <style>       orthogonal (default: straight lines between side centres) or curved
 //   --check               exit with code 2 when the layout check finds problems
 //   --json                print the layout reports as JSON instead of text
 //   --formats <list>      any of svg,png,html,auto (default: all four)
@@ -25,6 +26,7 @@ import { fileURLToPath } from "node:url";
 import { resolveTheme, loadTheme, partnerTheme, listThemes } from "./lib/theme.mjs";
 import { measureLayout, problems, warnings, summary } from "./lib/check.mjs";
 import { mermaidBlocks, replaceBlocks } from "./lib/markdown.mjs";
+import { collectGeometry, routeEdges, applyRoutes } from "./lib/route.mjs";
 import { pkgDir, fontCss, icon, diagramKind, classDefs, mermaidConfig, themeCss } from "./lib/style.mjs";
 
 let puppeteer;
@@ -32,9 +34,9 @@ try { ({ default: puppeteer } = await import("puppeteer-core")); pkgDir("mermaid
 catch { console.error(`Dependencies missing. Run once:  cd "${path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")}" && npm install`); process.exit(1); }
 
 // ---------- arguments
-const HELP = fs.readFileSync(fileURLToPath(import.meta.url), "utf8").split("\n").slice(1, 22).map((l) => l.replace(/^\/\/ ?/, "")).join("\n");
+const HELP = fs.readFileSync(fileURLToPath(import.meta.url), "utf8").split("\n").slice(1, 23).map((l) => l.replace(/^\/\/ ?/, "")).join("\n");
 const args = process.argv.slice(2);
-const opt = { out: null, scale: 3, theme: "pastel", dark: false, check: false, json: false, formats: null, md: false, mdImage: "png" };
+const opt = { edges: "orthogonal", out: null, scale: 3, theme: "pastel", dark: false, check: false, json: false, formats: null, md: false, mdImage: "png" };
 const FORMATS = ["svg", "png", "html", "auto"];
 const inputs = [];
 for (let i = 0; i < args.length; i++) {
@@ -46,6 +48,7 @@ for (let i = 0; i < args.length; i++) {
   else if (a === "--check") opt.check = true;
   else if (a === "--json") opt.json = true;
   else if (a === "--md") opt.md = true;
+  else if (a === "--edges") opt.edges = args[++i];
   else if (a === "--md-image") opt.mdImage = args[++i];
   else if (a === "--formats") opt.formats = String(args[++i]).split(",").map((f) => f.trim()).filter(Boolean);
   else if (a === "--list-themes") { console.log(listThemes().join("\n")); process.exit(0); }
@@ -56,6 +59,7 @@ for (let i = 0; i < args.length; i++) {
 if (!inputs.length) { console.error(HELP); process.exit(1); }
 const badFormat = (opt.formats || []).find((f) => !FORMATS.includes(f));
 if (badFormat) { console.error(`Unknown format "${badFormat}". Use any of: ${FORMATS.join(",")}`); process.exit(1); }
+if (!["orthogonal", "curved"].includes(opt.edges)) { console.error(`--edges must be orthogonal or curved`); process.exit(1); }
 if (!["png", "svg", "auto"].includes(opt.mdImage)) { console.error(`--md-image must be png, svg or auto`); process.exit(1); }
 
 let theme, alt;
@@ -155,7 +159,7 @@ const PAGE = `<!doctype html><html><head><meta charset="utf-8"><style>${fontCss(
 
 async function render(page, id, code, t, title) {
   const cfg = { ...mermaidConfig(t), themeCSS: themeCss(t) };
-  return page.evaluate(async (id, code, cfg, canvas, radius, title) => {
+  await page.evaluate(async (id, code, cfg, radius) => {
     mermaid.initialize(cfg);
     await document.fonts.ready;
     const { svg } = await mermaid.render(id, code);
@@ -165,7 +169,22 @@ async function render(page, id, code, t, title) {
     await Promise.all([...el.querySelectorAll("img")].map((i) => (i.complete ? 0 : new Promise((r) => (i.onload = i.onerror = r)))));
     el.querySelectorAll(".node rect:not(.divider)").forEach((r) => { r.setAttribute("rx", radius.node); r.setAttribute("ry", radius.node); });
     el.querySelectorAll(".cluster rect").forEach((r) => { r.setAttribute("rx", radius.cluster); r.setAttribute("ry", radius.cluster); });
+    // Group captions in the top-left corner, inset from the border.
+    el.querySelectorAll("g.cluster").forEach((g) => {
+      const r = g.querySelector(":scope > rect"), l = g.querySelector(":scope > g.cluster-label");
+      if (!r || !l) return;
+      const inset = Math.max(14, radius.cluster);
+      l.setAttribute("transform", `translate(${+r.getAttribute("x") + inset}, ${+r.getAttribute("y") + 12})`);
+    });
     el.querySelectorAll("rect.actor").forEach((r) => { r.setAttribute("rx", radius.actor); r.setAttribute("ry", radius.actor); });
+  }, id, code, cfg, t.radius);
+  // Straight edges between side centres (flowcharts and state diagrams).
+  if (opt.edges === "orthogonal" && ["flowchart", "state"].includes(diagramKind(code))) {
+    const routes = await routeEdges(await page.$eval("#out svg", collectGeometry));
+    await page.$eval("#out svg", applyRoutes, routes, Math.max(6, Math.min(12, t.radius.node)));
+  }
+  return page.evaluate((id, canvas, title) => {
+    const el = document.querySelector("#out svg");
     el.style.background = canvas;
     // Accessible name and description (Mermaid adds them itself for accTitle / accDescr).
     const NS = "http://www.w3.org/2000/svg";
@@ -180,13 +199,21 @@ async function render(page, id, code, t, title) {
       d.textContent = `${kind[0].toUpperCase() + kind.slice(1)} diagram${names.length ? ` with ${names.length} parts: ${names.slice(0, 15).join(", ")}${names.length > 15 ? ", ..." : ""}` : ""}.`;
       t.after(d);
     }
-    const vb = el.viewBox.baseVal, bg = document.createElementNS(NS, "rect");
+    // Grow the canvas if re-routed edges reach past it.
+    const vb = el.viewBox.baseVal, bb = el.getBBox(), pad = 12;
+    const x0 = Math.min(vb.x, bb.x - pad), y0 = Math.min(vb.y, bb.y - pad);
+    const x1 = Math.max(vb.x + vb.width, bb.x + bb.width + pad), y1 = Math.max(vb.y + vb.height, bb.y + bb.height + pad);
+    if (x0 < vb.x || y0 < vb.y || x1 > vb.x + vb.width || y1 > vb.y + vb.height) {
+      el.setAttribute("viewBox", `${x0} ${y0} ${x1 - x0} ${y1 - y0}`);
+      if (el.style.maxWidth) el.style.maxWidth = `${x1 - x0}px`;
+    }
+    const bg = document.createElementNS(NS, "rect");
     Object.entries({ class: "pd-bg", x: vb.x, y: vb.y, width: vb.width, height: vb.height, fill: canvas }).forEach(([k, v]) => bg.setAttribute(k, v));
     d.after(bg);
     el.setAttribute("role", "img");
     el.setAttribute("aria-labelledby", `${t.id || ""} ${d.id || ""}`.trim());
     return { svg: new XMLSerializer().serializeToString(el), title: t.textContent, desc: d.textContent };
-  }, id, code, cfg, t.canvas, t.radius, title);
+  }, id, t.canvas, title);
 }
 
 const browser = await puppeteer.launch({ executablePath: findChrome(), headless: true, args: ["--no-sandbox"] });
